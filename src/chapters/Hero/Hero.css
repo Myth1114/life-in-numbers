@@ -28,7 +28,8 @@
 
 .hero__heading-group {
   display: grid;
-  gap: var(--space-sm);
+  align-content: center;
+  gap: 1.5rem;
 }
 
 .hero__index {
@@ -45,20 +46,56 @@
 
 .hero__information {
   display: grid;
-  align-content: end;
-  gap: var(--space-md);
+  align-content: center;
+  gap: 1.5rem;
 }
 
 .hero__description {
-  max-width: 28rem;
+  max-width: 31rem;
+  color: var(--color-muted);
+  font-size: 1.625rem;
+}
+.hero__reflection-label {
+  color: var(--color-muted);
+
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  letter-spacing: var(--letter-spacing-label);
+  text-transform: uppercase;
+}
+.hero__reflections {
+  border-bottom: var(--border-light);
+}
+.hero__reflection {
+  display: grid;
+  grid-template-columns: 2rem 1fr;
+  gap: 1rem;
+
+  border-top: var(--border-light);
+
+  padding: 1rem 0;
+}
+.hero__reflection span {
+  padding-top: 0.2rem;
+
+  color: var(--color-rust);
+
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+}
+
+.hero__reflection p {
+  color: var(--color-muted);
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  line-height: 1.4;
 }
 
 .hero__privacy {
-  max-width: 25rem;
-
   color: var(--color-muted);
-
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-xs);
+  letter-spacing: 0.08em;
 }
 
 .hero__start {
@@ -92,7 +129,7 @@
 
 .hero__footer {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-between;
   gap: var(--space-md);
 
@@ -131,6 +168,9 @@
     grid-template-columns: 1fr 18rem;
     gap: var(--space-md);
   }
+  .hero__description {
+    font-size: 1.375rem;
+  }
 }
 
 /* Mobile */
@@ -158,13 +198,21 @@
   }
 
   .hero__description {
-    max-width: 23rem;
+    max-width: 100%;
+
+    font-size: 1.25rem;
   }
-
+  .hero__reflection {
+    grid-template-columns: 1.75rem 1fr;
+  }
+  .hero__reflection p {
+    font-size: 1rem;
+  }
   .hero__format {
-    max-width: 11rem;
-
     font-size: var(--font-size-base);
+  }
+  .hero__privacy {
+    text-align: center;
   }
 }
 
@@ -176,8 +224,7 @@
   }
 
   .hero__format {
-    max-width: 9rem;
-
+    max-width: 10rem;
     font-size: var(--font-size-sm);
   }
 
