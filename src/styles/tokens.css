@@ -2,13 +2,13 @@
   /* Colors */
 
   --color-paper: #e8e2d6;
-  --color-paper-deep: #ddd5c6;
   --color-paper-light: #f1ece2;
   --color-ink: #171714;
+
   --color-night: #101820;
   --color-moon: #d7d2c5;
+
   --color-rust: #a45132;
-  --color-rust-dark: #813d25;
   --color-moss: #66705a;
   --color-muted: #77736b;
 
@@ -23,48 +23,36 @@
 
   /* Font sizes */
 
-  --font-size-2xs: 0.6875rem;
   --font-size-xs: 0.75rem;
   --font-size-sm: 0.875rem;
   --font-size-base: 1rem;
   --font-size-md: 1.25rem;
   --font-size-lg: 1.75rem;
-  --font-size-xl: 2.5rem;
 
-  --font-size-heading: clamp(3.5rem, 9vw, 9rem);
-  --font-size-display: clamp(5rem, 16vw, 14rem);
+  /* Typography */
 
-  /* Line heights */
-
-  --line-height-none: 0.85;
   --line-height-tight: 1;
-  --line-height-heading: 1.05;
   --line-height-body: 1.6;
 
-  /* Letter spacing */
-
-  --letter-spacing-tight: -0.05em;
+  --letter-spacing-tight: -0.04em;
   --letter-spacing-label: 0.18em;
 
   /* Spacing */
 
-  --space-3xs: 0.125rem;
-  --space-2xs: 0.25rem;
   --space-xs: 0.5rem;
   --space-sm: 1rem;
   --space-md: 2rem;
   --space-lg: 4rem;
-  --space-xl: 8rem;
-  --space-2xl: 12rem;
+  --space-xl: 6rem;
 
   /* Layout */
 
-  --content-width: 90rem;
+  --content-width: 75rem;
   --reading-width: 42.5rem;
   --narrow-width: 32rem;
 
-  --page-padding: clamp(1.25rem, 4vw, 4rem);
-  --chapter-padding-block: clamp(5rem, 10vw, 10rem);
+  --page-padding: 3rem;
+  --chapter-padding: 5rem;
 
   /* Borders */
 
@@ -79,17 +67,31 @@
   --duration-fast: 180ms;
   --duration-normal: 400ms;
   --duration-slow: 800ms;
-  --duration-cinematic: 1400ms;
 
   --ease-time: cubic-bezier(0.22, 0.61, 0.36, 1);
   --ease-enter: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-exit: cubic-bezier(0.7, 0, 0.84, 0);
 
   /* Layer order */
 
-  --z-base: 0;
-  --z-sticky: 10;
   --z-progress: 20;
   --z-overlay: 50;
   --z-modal: 100;
+}
+
+/* Tablet */
+
+@media (max-width: 900px) {
+  :root {
+    --page-padding: 2rem;
+    --chapter-padding: 4rem;
+  }
+}
+
+/* Mobile */
+
+@media (max-width: 700px) {
+  :root {
+    --page-padding: 1.25rem;
+    --chapter-padding: 3.5rem;
+  }
 }

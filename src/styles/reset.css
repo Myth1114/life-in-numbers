@@ -4,33 +4,20 @@
   box-sizing: border-box;
 }
 
-html,
+html {
+  min-width: 20rem;
+  scroll-behavior: smooth;
+  text-size-adjust: 100%;
+}
+
 body,
-div,
-span,
-main,
-section,
-article,
-header,
-footer,
-nav,
-aside,
 h1,
 h2,
 h3,
 p,
 figure,
-blockquote,
-form,
-fieldset {
+blockquote {
   margin: 0;
-  padding: 0;
-}
-
-html {
-  min-width: 20rem;
-  scroll-behavior: smooth;
-  text-size-adjust: 100%;
 }
 
 body {

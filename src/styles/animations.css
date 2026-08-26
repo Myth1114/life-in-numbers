@@ -1,46 +1,8 @@
-/* Basic reveal state used before GSAP is introduced */
-
-.reveal {
-  opacity: 0;
-  transform: translateY(2rem);
-}
-
-.reveal.is-visible {
-  opacity: 1;
-  transform: translateY(0);
-
-  transition: opacity var(--duration-slow) var(--ease-enter),
-    transform var(--duration-slow) var(--ease-enter);
-}
-
-/* Horizontal editorial reveal */
-
-.reveal-from-left {
-  opacity: 0;
-  transform: translateX(-2rem);
-}
-
-.reveal-from-left.is-visible {
-  opacity: 1;
-  transform: translateX(0);
-
-  transition: opacity var(--duration-slow) var(--ease-enter),
-    transform var(--duration-slow) var(--ease-enter);
-}
-
-/* Slow appearance */
-
-.fade-in {
-  animation: fade-in var(--duration-slow) var(--ease-time) both;
-}
-
-/* Scroll marker */
-
 .scroll-line {
   position: relative;
 
   width: 1px;
-  height: 4rem;
+  height: 3.125rem;
 
   overflow: hidden;
 
@@ -49,11 +11,11 @@
 
 .scroll-line::after {
   position: absolute;
-  top: -100%;
+  top: -3.125rem;
   left: 0;
 
-  width: 100%;
-  height: 100%;
+  width: 1px;
+  height: 3.125rem;
 
   content: "";
 
@@ -62,47 +24,17 @@
   animation: scroll-line-pass 2.4s var(--ease-time) infinite;
 }
 
-/* Subtle pulse for the future heartbeat chapter */
-
-.pulse {
-  animation: quiet-pulse 1s var(--ease-time) infinite;
-}
-
-@keyframes fade-in {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
 @keyframes scroll-line-pass {
-  0% {
+  from {
     transform: translateY(0);
   }
 
-  60%,
-  100% {
-    transform: translateY(200%);
+  to {
+    transform: translateY(6.25rem);
   }
 }
 
-@keyframes quiet-pulse {
-  0%,
-  100% {
-    opacity: 0.55;
-    transform: scale(1);
-  }
-
-  45% {
-    opacity: 1;
-    transform: scale(1.04);
-  }
-}
-
-/* Accessibility: remove non-essential motion */
+/* Reduced motion */
 
 @media (prefers-reduced-motion: reduce) {
   html {
@@ -112,17 +44,13 @@
   *,
   *::before,
   *::after {
-    scroll-behavior: auto !important;
     animation-duration: 0.01ms !important;
-    animation-delay: 0ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
 
-  .reveal,
-  .reveal-from-left {
-    opacity: 1;
-    transform: none;
+    animation-iteration-count: 1 !important;
+
+    transition-duration: 0.01ms !important;
+
+    scroll-behavior: auto !important;
   }
 
   .scroll-line::after {

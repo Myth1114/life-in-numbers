@@ -139,6 +139,23 @@ export function calculateReferenceData(birthDate, today, lifespan = 80) {
     remainingSummers: Math.max(0, Math.floor(remainingYears)),
   };
 }
+
+export function calculatePerspectiveData(referenceData, completedAge) {
+  const remainingYears = referenceData.remainingYears;
+
+  const birthdaysRemaining = Math.max(0, referenceData.lifespan - completedAge);
+
+  return {
+    booksAtOnePerMonth: Math.floor(remainingYears * 12),
+
+    tripsAtFourPerYear: Math.floor(remainingYears * 4),
+
+    annualGatherings: Math.round(remainingYears),
+
+    birthdays: birthdaysRemaining,
+  };
+}
+
 export function calculateLifeData(
   dateValue,
   lifespan = 80,
@@ -168,6 +185,9 @@ export function calculateLifeData(
 
   const minutes = calculateMinutesLived(days);
 
+  const reference = calculateReferenceData(birthDate, today, lifespan);
+
+  const perspective = calculatePerspectiveData(reference, years);
   return {
     birthDate,
     today,
@@ -195,6 +215,7 @@ export function calculateLifeData(
 
     calendar: calculateCalendarData(birthDate, today, years),
 
-    reference: calculateReferenceData(birthDate, today, lifespan),
+    reference,
+    perspective,
   };
 }
