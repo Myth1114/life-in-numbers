@@ -40,9 +40,9 @@
   font-style: italic;
 }
 
-.hero__title {
+/* .hero__title {
   max-width: 8ch;
-}
+} */
 
 .hero__information {
   display: grid;
@@ -193,13 +193,12 @@
     gap: var(--space-lg);
   }
 
-  .hero__title {
-    max-width: 9ch;
-  }
+  /* .hero__title {
+    max-width: 20ch;
+  } */
 
   .hero__description {
     max-width: 100%;
-
     font-size: 1.25rem;
   }
   .hero__reflection {

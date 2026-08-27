@@ -6,7 +6,7 @@ body {
 }
 
 .display-title {
-  max-width: 10ch;
+  max-width: 12ch;
 
   font-family: var(--font-display);
   font-size: 5.5rem;
@@ -47,8 +47,8 @@ body {
 
 @media (max-width: 700px) {
   .display-title {
-    max-width: 9ch;
-    font-size: 3.25rem;
+    max-width: 100ch;
+    font-size: 3rem;
   }
 
   .editorial-text {

@@ -48,7 +48,7 @@
 }
 
 .data-section__title {
-  max-width: 14ch;
+  /* max-width: 14ch; */
 
   margin-bottom: 1.25rem;
 
