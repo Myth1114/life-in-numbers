@@ -1,9 +1,16 @@
 import { useState } from "react";
-import { getTodayInputValue, validateBirthDate } from "../../utils/dateUtils";
+
+import {
+  EARLIEST_ALLOWED_DATE,
+  getTodayInputValue,
+  validateBirthDate,
+} from "../../utils/dateUtils";
+
 import "./Arrival.css";
 
 function Arrival({ onComplete }) {
   const [birthDate, setBirthDate] = useState("");
+
   const [error, setError] = useState("");
 
   function handleDateChange(event) {
@@ -21,6 +28,7 @@ function Arrival({ onComplete }) {
 
     if (validationMessage) {
       setError(validationMessage);
+
       return;
     }
 
@@ -30,7 +38,11 @@ function Arrival({ onComplete }) {
   }
 
   return (
-    <section className="chapter arrival" id="arrival">
+    <section
+      className="chapter arrival"
+      id="arrival"
+      aria-labelledby="arrival-title"
+    >
       <div className="chapter__inner arrival__inner">
         <header className="arrival__header">
           <p className="site-name">Life in Numbers</p>
@@ -40,7 +52,9 @@ function Arrival({ onComplete }) {
 
         <div className="arrival__content">
           <div className="arrival__introduction">
-            <h2 className="display-title">How long have you been here?</h2>
+            <h2 className="display-title" id="arrival-title">
+              How long have you been here?
+            </h2>
 
             <p className="editorial-text arrival__description">
               Enter the day you arrived. We will turn the time between then and
@@ -60,7 +74,7 @@ function Arrival({ onComplete }) {
                 name="birthDate"
                 type="date"
                 value={birthDate}
-                min="1900-01-01"
+                min={EARLIEST_ALLOWED_DATE}
                 max={getTodayInputValue()}
                 required
                 aria-invalid={Boolean(error)}
@@ -77,7 +91,7 @@ function Arrival({ onComplete }) {
               <p
                 className="field-error"
                 id="birth-date-error"
-                aria-live="polite"
+                role={error ? "alert" : undefined}
               >
                 {error}
               </p>
@@ -85,6 +99,7 @@ function Arrival({ onComplete }) {
 
             <button className="primary-button" type="submit">
               <span>See my life</span>
+
               <span aria-hidden="true">→</span>
             </button>
           </form>

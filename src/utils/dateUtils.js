@@ -1,44 +1,57 @@
-const EARLIEST_ALLOWED_YEAR = 1900;
+export const EARLIEST_ALLOWED_DATE = "1900-01-01";
+
+const DATE_INPUT_PATTERN = /^(\d{4})-(\d{2})-(\d{2})$/;
+
+function isValidDateObject(date) {
+  return date instanceof Date && Number.isFinite(date.getTime());
+}
 
 /**
- * Converts the date input value into a timezone-safe Date.
- *
- * Input:
- * "1997-04-26"
- *
- * Output:
- * Date representing 26 April 1997
+ * Converts YYYY-MM-DD into a Date at UTC
+ * midnight without local-timezone shifting.
  */
 export function parseDateInput(dateValue) {
-  if (!dateValue) {
+  if (typeof dateValue !== "string") {
     return null;
   }
 
-  const parts = dateValue.split("-");
+  const match = DATE_INPUT_PATTERN.exec(dateValue);
 
-  if (parts.length !== 3) {
+  if (!match) {
     return null;
   }
 
-  const year = Number(parts[0]);
-  const month = Number(parts[1]);
-  const day = Number(parts[2]);
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+
+  if (
+    !Number.isInteger(year) ||
+    !Number.isInteger(month) ||
+    !Number.isInteger(day)
+  ) {
+    return null;
+  }
 
   const parsedDate = new Date(Date.UTC(year, month - 1, day));
 
-  const isValidDate =
+  const isExactDate =
     parsedDate.getUTCFullYear() === year &&
     parsedDate.getUTCMonth() === month - 1 &&
     parsedDate.getUTCDate() === day;
 
-  return isValidDate ? parsedDate : null;
+  return isExactDate ? parsedDate : null;
 }
 
 /**
- * Returns today's date at UTC midnight while preserving
- * the visitor's local calendar day.
+ * Returns UTC midnight representing the
+ * visitor's current local calendar date.
  */
 export function getTodayUTC(currentDate = new Date()) {
+  if (!isValidDateObject(currentDate)) {
+    throw new TypeError("A valid current date is required.");
+  }
+
   return new Date(
     Date.UTC(
       currentDate.getFullYear(),
@@ -49,10 +62,13 @@ export function getTodayUTC(currentDate = new Date()) {
 }
 
 /**
- * Creates the YYYY-MM-DD format required by
- * an HTML date input's max attribute.
+ * Produces YYYY-MM-DD for a date input.
  */
 export function getTodayInputValue(currentDate = new Date()) {
+  if (!isValidDateObject(currentDate)) {
+    throw new TypeError("A valid current date is required.");
+  }
+
   const year = currentDate.getFullYear();
 
   const month = String(currentDate.getMonth() + 1).padStart(2, "0");
@@ -63,8 +79,8 @@ export function getTodayInputValue(currentDate = new Date()) {
 }
 
 /**
- * Validates a DOB and returns a friendly error message.
- * An empty string means the date is valid.
+ * Returns an error message or an empty
+ * string when the DOB is valid.
  */
 export function validateBirthDate(dateValue, currentDate = new Date()) {
   if (!dateValue) {
@@ -77,14 +93,16 @@ export function validateBirthDate(dateValue, currentDate = new Date()) {
     return "That date doesn't look quite right.";
   }
 
+  const earliestDate = parseDateInput(EARLIEST_ALLOWED_DATE);
+
+  if (birthDate < earliestDate) {
+    return "Please choose a date from 1900 onwards.";
+  }
+
   const today = getTodayUTC(currentDate);
 
   if (birthDate > today) {
     return "That date hasn't happened yet.";
-  }
-
-  if (birthDate.getUTCFullYear() < EARLIEST_ALLOWED_YEAR) {
-    return "Please choose a date from 1900 onwards.";
   }
 
   return "";
