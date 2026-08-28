@@ -1,10 +1,13 @@
-import { BookOpen, MapPinned, UsersRound, Cake } from "lucide-react";
+import { useRef } from "react";
 
+import { BookOpen, MapPinned, UsersRound, Cake } from "lucide-react";
 import { formatWholeNumber } from "../../utils/numberFormat";
 
+import { useChapterReveal } from "../../hooks/useChapterReveal";
 function Perspective({ lifeData }) {
   const referenceAge = lifeData.reference.lifespan;
-
+  const sectionRef = useRef(null);
+  useChapterReveal(sectionRef);
   const perspectiveMetrics = [
     {
       key: "books",
@@ -41,9 +44,10 @@ function Perspective({ lifeData }) {
       className="data-section perspective"
       id="perspective"
       aria-labelledby="perspective-title"
+      ref={sectionRef}
     >
       <div className="data-section__container">
-        <header className="data-section__header">
+        <header className="data-section__header" data-reveal>
           <p className="data-section__number">07</p>
 
           <div>
@@ -65,7 +69,7 @@ function Perspective({ lifeData }) {
             const MetricIcon = metric.icon;
 
             return (
-              <article className="data-metric" key={metric.key}>
+              <article className="data-metric" key={metric.key} data-reveal>
                 <div className="data-metric__top">
                   <p className="data-metric__label">{metric.label}</p>
 
@@ -87,7 +91,7 @@ function Perspective({ lifeData }) {
           })}
         </div>
 
-        <aside className="data-note">
+        <aside className="data-note" data-reveal>
           <p className="data-note__label">Using age {referenceAge}</p>
 
           <div>

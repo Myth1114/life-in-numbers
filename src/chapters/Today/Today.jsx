@@ -1,22 +1,126 @@
-import { useState } from "react";
-
+import { useRef, useState } from "react";
 import { ArrowUpRight, CircleHelp, RotateCcw } from "lucide-react";
-
 import { formatDisplayDate, formatWholeNumber } from "../../utils/numberFormat";
+
+import { gsap, useGSAP } from "../../animations/gsap";
+import { useReducedMotion } from "../../hooks/useReducedMotion";
 
 import "./Today.css";
 
 function Today({ lifeData, onReadAgain, onAnotherDate, onStartOver }) {
   const [showExplanation, setShowExplanation] = useState(false);
-
   const formattedBirthDate = formatDisplayDate(lifeData.birthDate);
-
   const formattedDays = formatWholeNumber(lifeData.lived.days);
 
+  const sectionRef = useRef(null);
+  const visualRef = useRef(null);
+
+  const prefersReducedMotion = useReducedMotion();
+  useGSAP(
+    () => {
+      const visual = visualRef.current;
+      const word = visual?.querySelector(".today__word");
+      const number = visual?.querySelector(".today__number");
+      const revealItems = gsap.utils.toArray("[data-today-reveal]");
+
+      if (prefersReducedMotion) {
+        gsap.set([word, number, ...revealItems].filter(Boolean), {
+          clearProps: "all",
+        });
+
+        return;
+      }
+
+      if (visual && word && number) {
+        const visualTimeline = gsap.timeline({
+          scrollTrigger: {
+            trigger: visual,
+
+            start: "top 80%",
+
+            once: true,
+          },
+        });
+
+        visualTimeline.fromTo(
+          word,
+          {
+            autoAlpha: 0,
+            y: 46,
+          },
+          {
+            autoAlpha: 1,
+            y: 0,
+
+            duration: 1.25,
+            ease: "power3.out",
+          }
+        );
+
+        visualTimeline.fromTo(
+          number,
+          {
+            autoAlpha: 0,
+            y: 58,
+            scale: 0.86,
+            rotation: -3,
+          },
+          {
+            autoAlpha: 1,
+            y: 0,
+            scale: 1,
+            rotation: 0,
+
+            duration: 1.35,
+            ease: "power3.out",
+          },
+          "-=0.72"
+        );
+      }
+
+      revealItems.forEach((item) => {
+        gsap.fromTo(
+          item,
+          {
+            autoAlpha: 0,
+            y: 28,
+          },
+          {
+            autoAlpha: 1,
+            y: 0,
+
+            duration: 1.15,
+            ease: "power3.out",
+
+            scrollTrigger: {
+              trigger: item,
+
+              start: "top 88%",
+
+              once: true,
+            },
+          }
+        );
+      });
+    },
+    {
+      scope: sectionRef,
+
+      dependencies: [prefersReducedMotion],
+
+      revertOnUpdate: true,
+    }
+  );
+
   return (
-    <section className="today" id="today" aria-labelledby="today-title">
+    <section
+      className="today"
+      id="today"
+      aria-labelledby="today-title"
+      ref={sectionRef}
+    >
       <div className="today__container">
-        <div className="today__visual-area">
+        <div className="today__visual-area" ref={visualRef}>
           <div className="today__visual" aria-hidden="true">
             <p className="today__word">Today</p>
 
@@ -44,19 +148,21 @@ function Today({ lifeData, onReadAgain, onAnotherDate, onStartOver }) {
         </div>
 
         <div className="today__summary">
-          <p className="today__summary-label">A personal summary</p>
+          <p className="today__summary-label" data-today-reveal>
+            A personal summary
+          </p>
 
-          <h2 className="today__title" id="today-title">
+          <h2 className="today__title" id="today-title" data-today-reveal>
             You have been here for approximately <em>{formattedDays} days</em>,
             since {formattedBirthDate}.
           </h2>
 
-          <p className="today__description">
+          <p className="today__description" data-today-reveal>
             The future figures were only a reference. This one is more certain:
             today is the only square asking to be noticed.
           </p>
 
-          <div className="today__actions">
+          <div className="today__actions" data-today-reveal>
             <button
               className="today__primary-action"
               type="button"
@@ -79,14 +185,14 @@ function Today({ lifeData, onReadAgain, onAnotherDate, onStartOver }) {
           </div>
         </div>
 
-        <footer className="today__footer">
+        <footer className="today__footer" data-today-reveal>
           <p>Life in Numbers / An almanac for the living.</p>
 
           <p className="today__privacy">No data leaves this page.</p>
         </footer>
       </div>
 
-      <div className="today__bottom-bar">
+      <div className="today__bottom-bar" data-today-reveal>
         <button
           className="today__start-over"
           type="button"

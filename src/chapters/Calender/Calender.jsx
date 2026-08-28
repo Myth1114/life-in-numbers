@@ -1,5 +1,7 @@
+import { useRef } from "react";
 import { CalendarCheck, Cake, PartyPopper, Coffee } from "lucide-react";
 
+import { useChapterReveal } from "../../hooks/useChapterReveal";
 import { formatWholeNumber } from "../../utils/numberFormat";
 
 function Calendar({ lifeData }) {
@@ -33,15 +35,18 @@ function Calendar({ lifeData }) {
       icon: Coffee,
     },
   ];
+  const sectionRef = useRef(null);
+  useChapterReveal(sectionRef);
 
   return (
     <section
       className="data-section calendar"
       id="calendar"
       aria-labelledby="calendar-title"
+      ref={sectionRef}
     >
       <div className="data-section__container">
-        <header className="data-section__header">
+        <header className="data-section__header" data-reveal>
           <p className="data-section__number">04</p>
 
           <div>
@@ -63,7 +68,7 @@ function Calendar({ lifeData }) {
             const MetricIcon = metric.icon;
 
             return (
-              <article className="data-metric" key={metric.key}>
+              <article className="data-metric" key={metric.key} data-reveal>
                 <div className="data-metric__top">
                   <p className="data-metric__label">{metric.label}</p>
 
@@ -85,7 +90,7 @@ function Calendar({ lifeData }) {
           })}
         </div>
 
-        <aside className="data-note">
+        <aside className="data-note" data-reveal>
           <p className="data-note__label">A human calendar</p>
 
           <div>

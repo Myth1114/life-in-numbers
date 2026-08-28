@@ -1,4 +1,9 @@
+import { useRef } from "react";
+
 import LifeGridCanvas from "../../visaulizations/LifeGridCanvas";
+
+import { useChapterReveal } from "../../hooks/useChapterReveal";
+
 import "./LifeWeeks.css";
 
 function LifeWeeks({ lifeData }) {
@@ -8,14 +13,19 @@ function LifeWeeks({ lifeData }) {
 
   const livedWeeks = Math.min(lifeData.lived.weeks, totalReferenceWeeks);
 
+  const sectionRef = useRef(null);
+
+  useChapterReveal(sectionRef);
+
   return (
     <section
+      ref={sectionRef}
       className="data-section life-weeks"
       id="life-weeks"
       aria-labelledby="life-weeks-title"
     >
       <div className="data-section__container">
-        <header className="data-section__header">
+        <header className="data-section__header" data-reveal>
           <p className="data-section__number">05</p>
 
           <div>
@@ -32,7 +42,7 @@ function LifeWeeks({ lifeData }) {
           </div>
         </header>
 
-        <div className="life-weeks__information">
+        <div className="life-weeks__information" data-reveal>
           <p>One square = one week</p>
 
           <p>
@@ -43,19 +53,40 @@ function LifeWeeks({ lifeData }) {
           </p>
         </div>
 
-        <div className="life-weeks__legend">
+        <div className="life-weeks__legend" data-reveal>
           <div className="life-weeks__legend-item">
-            <span className="life-weeks__mark life-weeks__mark--lived" />
+            <span
+              className="
+                life-weeks__mark
+                life-weeks__mark--lived
+              "
+              aria-hidden="true"
+            />
+
             <span>Lived</span>
           </div>
 
           <div className="life-weeks__legend-item">
-            <span className="life-weeks__mark life-weeks__mark--current" />
+            <span
+              className="
+                life-weeks__mark
+                life-weeks__mark--current
+              "
+              aria-hidden="true"
+            />
+
             <span>Current week</span>
           </div>
 
           <div className="life-weeks__legend-item">
-            <span className="life-weeks__mark life-weeks__mark--reference" />
+            <span
+              className="
+                life-weeks__mark
+                life-weeks__mark--reference
+              "
+              aria-hidden="true"
+            />
+
             <span>Reference future</span>
           </div>
         </div>
@@ -64,7 +95,7 @@ function LifeWeeks({ lifeData }) {
           <LifeGridCanvas livedWeeks={livedWeeks} lifespan={lifespan} />
         </div>
 
-        <aside className="data-note">
+        <aside className="data-note" data-reveal>
           <p className="data-note__label">Reference, not prediction</p>
 
           <div>

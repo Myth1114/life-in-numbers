@@ -1,59 +1,69 @@
-import { Sunrise, Moon, CloudSun } from "lucide-react";
-
+import { useRef } from "react";
+import { Leaf, Moon, Sunrise } from "lucide-react";
+import { useChapterReveal } from "../../hooks/useChapterReveal";
 import { formatWholeNumber } from "../../utils/numberFormat";
 
 function Sky({ lifeData }) {
+  const sectionRef = useRef(null);
+
+  useChapterReveal(sectionRef);
+
   const skyMetrics = [
     {
       key: "sunrises",
       label: "Sunrises",
       value: lifeData.estimated.sunrises,
       description:
-        "The sun has risen roughly this many times since you arrived.",
+        "An approximate count of mornings since the day you arrived.",
       icon: Sunrise,
     },
     {
-      key: "fullMoons",
+      key: "full-moons",
       label: "Full moons",
       value: lifeData.estimated.fullMoons,
-      description: "Calculated using the average lunar cycle of 29.53 days.",
+      description: "Estimated using the average length of a lunar cycle.",
       icon: Moon,
     },
     {
       key: "seasons",
       label: "Seasons",
       value: lifeData.estimated.seasons,
-      description: "Quiet changes from one part of the year into another.",
-      icon: CloudSun,
+      description: "Spring, summer, autumn and winter returning in sequence.",
+      icon: Leaf,
     },
   ];
 
   return (
-    <section className="data-section sky" id="sky" aria-labelledby="sky-title">
+    <section
+      ref={sectionRef}
+      className="data-section sky"
+      id="sky"
+      aria-labelledby="sky-title"
+    >
       <div className="data-section__container">
-        <header className="data-section__header">
+        <header className="data-section__header" data-reveal>
           <p className="data-section__number">03</p>
 
           <div>
-            <p className="data-section__eyebrow">The sky above</p>
+            <p className="data-section__eyebrow">Above you</p>
 
             <h2 className="data-section__title" id="sky-title">
-              The world kept turning.
+              The sky kept its own record.
             </h2>
 
             <p className="data-section__introduction">
-              Above the calendar, larger cycles continued—the sun, the moon and
-              the changing seasons.
+              Morning followed night. Moons completed their cycles. Seasons
+              returned, whether or not you were paying attention.
             </p>
           </div>
         </header>
 
-        <div className="data-grid data-grid--three">
+        <div className="data-grid">
           {skyMetrics.map((metric) => {
             const MetricIcon = metric.icon;
 
             return (
-              <article className="data-metric" key={metric.key}>
+              <article className="data-metric" key={metric.key} data-reveal>
                 <div className="data-metric__top">
                   <p className="data-metric__label">{metric.label}</p>
 
@@ -75,17 +85,18 @@ function Sky({ lifeData }) {
           })}
         </div>
 
-        <aside className="data-note">
-          <p className="data-note__label">One ordinary sunrise</p>
+        <aside className="data-note" data-reveal>
+          <p className="data-note__label">Approximate by design</p>
 
           <div>
             <p className="data-note__title">
-              Most of them probably felt ordinary.
+              The sky does not follow the calendar perfectly.
             </p>
 
             <p className="data-note__description">
-              That is not what made them unimportant. Ordinary repetition is how
-              a life quietly accumulates.
+              Sunrise totals use lived days. Full moons and seasons are
+              estimates based on average cycle lengths, intended to communicate
+              scale rather than astronomical precision.
             </p>
           </div>
         </aside>

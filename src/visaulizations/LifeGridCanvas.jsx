@@ -1,33 +1,48 @@
 import { useEffect, useRef } from "react";
 
+import { gsap, useGSAP } from "../animations/gsap";
+
+import { useReducedMotion } from "../hooks/useReducedMotion";
+
 function LifeGridCanvas({ livedWeeks, lifespan }) {
   const canvasRef = useRef(null);
+  const drawGridRef = useRef(null);
+
+  const visibleWeeksRef = useRef(0);
+
+  const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
     const canvas = canvasRef.current;
 
     if (!canvas) {
-      return;
+      return undefined;
     }
 
     const context = canvas.getContext("2d");
 
     if (!context) {
-      return;
+      return undefined;
     }
 
     const columns = 52;
     const rows = lifespan;
     const totalWeeks = columns * rows;
 
-    const drawGrid = () => {
+    const completedWeeks = Math.min(livedWeeks, totalWeeks);
+
+    function drawGrid() {
       const rectangle = canvas.getBoundingClientRect();
+
+      if (rectangle.width === 0 || rectangle.height === 0) {
+        return;
+      }
 
       const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
 
-      canvas.width = rectangle.width * pixelRatio;
+      canvas.width = Math.round(rectangle.width * pixelRatio);
 
-      canvas.height = rectangle.height * pixelRatio;
+      canvas.height = Math.round(rectangle.height * pixelRatio);
 
       context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
 
@@ -49,7 +64,12 @@ function LifeGridCanvas({ livedWeeks, lifespan }) {
 
       const squareSize = Math.min(cellWidth, cellHeight) * 0.72;
 
-      const completedWeeks = Math.min(livedWeeks, totalWeeks);
+      const visibleWeeks = Math.min(
+        Math.floor(visibleWeeksRef.current),
+        completedWeeks
+      );
+
+      const hasReachedCurrentWeek = visibleWeeks >= completedWeeks;
 
       for (let index = 0; index < totalWeeks; index += 1) {
         const column = index % columns;
@@ -60,11 +80,15 @@ function LifeGridCanvas({ livedWeeks, lifespan }) {
 
         const y = row * cellHeight + (cellHeight - squareSize) / 2;
 
-        if (index < completedWeeks) {
+        if (index < visibleWeeks) {
           context.fillStyle = rustColor;
 
           context.fillRect(x, y, squareSize, squareSize);
-        } else if (index === completedWeeks && completedWeeks < totalWeeks) {
+        } else if (
+          index === completedWeeks &&
+          completedWeeks < totalWeeks &&
+          hasReachedCurrentWeek
+        ) {
           context.fillStyle = mossColor;
 
           context.fillRect(x, y, squareSize, squareSize);
@@ -76,18 +100,86 @@ function LifeGridCanvas({ livedWeeks, lifespan }) {
           context.strokeRect(x, y, squareSize, squareSize);
         }
       }
-    };
+    }
+
+    drawGridRef.current = drawGrid;
 
     drawGrid();
 
-    const resizeObserver = new ResizeObserver(drawGrid);
+    const resizeObserver = new ResizeObserver(() => {
+      drawGrid();
+    });
 
     resizeObserver.observe(canvas);
 
     return () => {
       resizeObserver.disconnect();
+      drawGridRef.current = null;
     };
   }, [livedWeeks, lifespan]);
+
+  useGSAP(
+    () => {
+      const canvas = canvasRef.current;
+
+      if (!canvas) {
+        return;
+      }
+
+      const totalWeeks = lifespan * 52;
+
+      const completedWeeks = Math.min(livedWeeks, totalWeeks);
+
+      if (prefersReducedMotion) {
+        visibleWeeksRef.current = completedWeeks;
+
+        drawGridRef.current?.();
+
+        return;
+      }
+
+      visibleWeeksRef.current = 0;
+      drawGridRef.current?.();
+
+      const animationState = {
+        visibleWeeks: 0,
+      };
+
+      gsap.to(animationState, {
+        visibleWeeks: completedWeeks,
+
+        ease: "none",
+
+        scrollTrigger: {
+          trigger: canvas,
+
+          start: "top 88%",
+          end: "bottom 88%",
+          scrub: 1,
+          invalidateOnRefresh: true,
+        },
+
+        onUpdate: () => {
+          visibleWeeksRef.current = animationState.visibleWeeks;
+
+          drawGridRef.current?.();
+        },
+
+        onComplete: () => {
+          visibleWeeksRef.current = completedWeeks;
+
+          drawGridRef.current?.();
+        },
+      });
+    },
+    {
+      scope: canvasRef,
+
+      dependencies: [livedWeeks, lifespan, prefersReducedMotion],
+
+      revertOnUpdate: true,
+    }
+  );
 
   return (
     <>
@@ -99,8 +191,7 @@ function LifeGridCanvas({ livedWeeks, lifespan }) {
 
       <p className="visually-hidden">
         A grid containing {lifespan} rows and 52 columns. Each mark represents
-        one week. {livedWeeks.toLocaleString()}
-        weeks are marked as lived.
+        one week. {livedWeeks.toLocaleString()} weeks are marked as lived.
       </p>
     </>
   );

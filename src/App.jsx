@@ -43,9 +43,7 @@ function App() {
     if (!birthDateValue) {
       return;
     }
-
     const updatedLifeData = calculateLifeData(birthDateValue, newReferenceAge);
-
     setLifeData(updatedLifeData);
   }
 

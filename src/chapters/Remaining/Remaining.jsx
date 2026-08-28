@@ -1,10 +1,15 @@
+import { useRef } from "react";
 import { CalendarRange, Rows3, Umbrella, Sun } from "lucide-react";
 
+import { useChapterReveal } from "../../hooks/useChapterReveal";
 import { formatWholeNumber } from "../../utils/numberFormat";
 
 import "./Remaining.css";
 
 function Remaining({ lifeData, onReferenceAgeChange }) {
+  const sectionRef = useRef(null);
+  useChapterReveal(sectionRef);
+
   const referenceAge = lifeData.reference.lifespan;
 
   const livedPercentage = Math.min(
@@ -51,12 +56,13 @@ function Remaining({ lifeData, onReferenceAgeChange }) {
 
   return (
     <section
+      ref={sectionRef}
       className="data-section remaining"
       id="remaining"
       aria-labelledby="remaining-title"
     >
       <div className="data-section__container">
-        <header className="data-section__header">
+        <header className="data-section__header" data-reveal>
           <p className="data-section__number">06</p>
 
           <div>
@@ -73,7 +79,7 @@ function Remaining({ lifeData, onReferenceAgeChange }) {
           </div>
         </header>
 
-        <div className="remaining__control">
+        <div className="remaining__control" data-reveal>
           <div className="remaining__control-header">
             <div>
               <label
@@ -111,7 +117,7 @@ function Remaining({ lifeData, onReferenceAgeChange }) {
           </div>
         </div>
 
-        <div className="remaining__position">
+        <div className="remaining__position" data-reveal>
           <div className="remaining__position-header">
             <p>Where the mark sits</p>
 
@@ -134,7 +140,11 @@ function Remaining({ lifeData, onReferenceAgeChange }) {
           </div>
         </div>
 
-        <p className="remaining__statement" id="reference-explanation">
+        <p
+          className="remaining__statement"
+          id="reference-explanation"
+          data-reveal
+        >
           At this horizon, there are roughly{" "}
           <em>{formatWholeNumber(lifeData.reference.remainingDays)}</em>{" "}
           reference days beyond today.
@@ -145,7 +155,7 @@ function Remaining({ lifeData, onReferenceAgeChange }) {
             const MetricIcon = metric.icon;
 
             return (
-              <article className="data-metric" key={metric.key}>
+              <article className="data-metric" key={metric.key} data-reveal>
                 <div className="data-metric__top">
                   <p className="data-metric__label">{metric.label}</p>
 
@@ -167,7 +177,7 @@ function Remaining({ lifeData, onReferenceAgeChange }) {
           })}
         </div>
 
-        <aside className="data-note">
+        <aside className="data-note" data-reveal>
           <p className="data-note__label">Reference, not prediction</p>
 
           <div>

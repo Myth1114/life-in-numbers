@@ -1,7 +1,8 @@
+import { useRef } from "react";
 import { Orbit, CalendarDays, Clock3, Sun } from "lucide-react";
 
-import { formatWholeNumber } from "../../utils/numberFormat";
-
+import { useChapterReveal } from "../../hooks/useChapterReveal";
+import AnimatedNumber from "../../components/data/AnimatedNumber";
 function Time({ lifeData }) {
   const timeMetrics = [
     {
@@ -33,15 +34,17 @@ function Time({ lifeData }) {
       icon: Sun,
     },
   ];
-
+  const sectionRef = useRef(null);
+  useChapterReveal(sectionRef);
   return (
     <section
+      ref={sectionRef}
       className="data-section time"
       id="time"
       aria-labelledby="time-title"
     >
       <div className="data-section__container">
-        <header className="data-section__header">
+        <header className="data-section__header" data-reveal>
           <p className="data-section__number">01</p>
 
           <div>
@@ -61,7 +64,7 @@ function Time({ lifeData }) {
             const MetricIcon = metric.icon;
 
             return (
-              <article className="data-metric" key={metric.key}>
+              <article className="data-metric" key={metric.key} data-reveal>
                 <div className="data-metric__top">
                   <p className="data-metric__label">{metric.label}</p>
 
@@ -74,7 +77,7 @@ function Time({ lifeData }) {
                 </div>
 
                 <p className="data-metric__value">
-                  {formatWholeNumber(metric.value)}
+                  <AnimatedNumber value={metric.value} />
                 </p>
 
                 <p className="data-metric__description">{metric.description}</p>
@@ -83,7 +86,7 @@ function Time({ lifeData }) {
           })}
         </div>
 
-        <aside className="data-note">
+        <aside className="data-note" data-reveal>
           <p className="data-note__label">A note on arithmetic</p>
 
           <div>
