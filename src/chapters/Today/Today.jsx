@@ -4,7 +4,11 @@ import { formatDisplayDate, formatWholeNumber } from "../../utils/numberFormat";
 
 import { gsap, useGSAP } from "../../animations/gsap";
 import { useReducedMotion } from "../../hooks/useReducedMotion";
+import { Download } from "lucide-react";
 
+import { toPng } from "html-to-image";
+
+import ShareCard from "../../components/share/ShareCard";
 import "./Today.css";
 
 function Today({ lifeData, onReadAgain, onAnotherDate, onStartOver }) {
@@ -15,6 +19,8 @@ function Today({ lifeData, onReadAgain, onAnotherDate, onStartOver }) {
   const sectionRef = useRef(null);
   const visualRef = useRef(null);
 
+  const [shareStatus, setShareStatus] = useState("idle");
+  const shareCardRef = useRef(null);
   const prefersReducedMotion = useReducedMotion();
   useGSAP(
     () => {
@@ -111,6 +117,58 @@ function Today({ lifeData, onReadAgain, onAnotherDate, onStartOver }) {
       revertOnUpdate: true,
     }
   );
+  async function handleDownloadCard() {
+    if (!shareCardRef.current || shareStatus === "generating") {
+      return;
+    }
+
+    try {
+      setShareStatus("generating");
+
+      if (document.fonts?.ready) {
+        await document.fonts.ready;
+      }
+
+      const imageUrl = await toPng(shareCardRef.current, {
+        width: 1080,
+        height: 1350,
+        pixelRatio: 1,
+        cacheBust: true,
+
+        backgroundColor: "#e8e2d6",
+
+        style: {
+          position: "static",
+          top: "auto",
+          left: "auto",
+          right: "auto",
+
+          width: "1080px",
+          height: "1350px",
+
+          margin: "0",
+          transform: "none",
+        },
+      });
+
+      const downloadLink = document.createElement("a");
+
+      downloadLink.download = "life-in-numbers-summary.png";
+
+      downloadLink.href = imageUrl;
+
+      document.body.appendChild(downloadLink);
+
+      downloadLink.click();
+      downloadLink.remove();
+
+      setShareStatus("complete");
+    } catch (error) {
+      console.error("Unable to create share card:", error);
+
+      setShareStatus("error");
+    }
+  }
 
   return (
     <section
@@ -182,6 +240,24 @@ function Today({ lifeData, onReadAgain, onAnotherDate, onStartOver }) {
 
               <span>Another date</span>
             </button>
+            <button
+              className="today__secondary-action"
+              type="button"
+              onClick={handleDownloadCard}
+              disabled={shareStatus === "generating"}
+            >
+              <Download size={20} strokeWidth={1.5} aria-hidden="true" />
+
+              <span>
+                {shareStatus === "generating"
+                  ? "Creating card..."
+                  : shareStatus === "complete"
+                  ? "Download again"
+                  : shareStatus === "error"
+                  ? "Try download again"
+                  : "Download my numbers"}
+              </span>
+            </button>
           </div>
         </div>
 
@@ -211,6 +287,7 @@ function Today({ lifeData, onReadAgain, onAnotherDate, onStartOver }) {
           <span className="is-active" />
         </div> */}
       </div>
+      <ShareCard ref={shareCardRef} lifeData={lifeData} />
     </section>
   );
 }

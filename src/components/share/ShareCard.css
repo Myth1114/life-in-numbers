@@ -1,0 +1,173 @@
+.share-card {
+  position: fixed;
+  top: 0;
+  left: -10000px;
+
+  display: grid;
+  grid-template-rows:
+    auto
+    1fr
+    auto
+    auto;
+
+  width: 1080px;
+  height: 1350px;
+
+  overflow: hidden;
+
+  padding: 72px;
+
+  background-color: #e8e2d6;
+  color: #171714;
+
+  font-family: var(--font-interface);
+
+  pointer-events: none;
+}
+
+.share-card::before {
+  position: absolute;
+  top: 0;
+  right: 0;
+
+  width: 300px;
+  height: 18px;
+
+  background-color: #a45132;
+
+  content: "";
+}
+
+.share-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+
+  border-bottom: 2px solid rgba(23, 23, 20, 0.2);
+
+  padding-bottom: 28px;
+
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.share-card__edition {
+  color: #77736b;
+}
+
+.share-card__statement {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  padding: 54px 0;
+}
+
+.share-card__eyebrow {
+  margin-bottom: 34px;
+
+  color: #a45132;
+
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.share-card__title {
+  max-width: 760px;
+
+  font-family: var(--font-display);
+  font-size: 68px;
+  font-weight: 400;
+  line-height: 1.05;
+}
+
+.share-card__primary-number {
+  margin-top: 52px;
+
+  color: #a45132;
+
+  font-family: var(--font-display);
+  font-size: 190px;
+  font-style: italic;
+  line-height: 0.78;
+  letter-spacing: -0.045em;
+}
+
+.share-card__primary-label {
+  margin-top: 26px;
+
+  color: #77736b;
+
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.share-card__metrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+
+  border-top: 2px solid rgba(23, 23, 20, 0.2);
+  border-left: 2px solid rgba(23, 23, 20, 0.2);
+}
+
+.share-card__metric {
+  min-height: 150px;
+
+  border-right: 2px solid rgba(23, 23, 20, 0.2);
+  border-bottom: 2px solid rgba(23, 23, 20, 0.2);
+
+  padding: 26px;
+}
+
+.share-card__metric-label {
+  margin-bottom: 22px;
+
+  color: #77736b;
+
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.share-card__metric-value {
+  font-family: var(--font-display);
+  font-size: 42px;
+  line-height: 1;
+}
+
+.share-card__footer {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 50px;
+
+  padding-top: 42px;
+
+  color: #77736b;
+
+  font-family: var(--font-display);
+  font-size: 25px;
+  line-height: 1.35;
+}
+
+.share-card__footer > p:first-child {
+  max-width: 500px;
+}
+
+.share-card__today {
+  color: #a45132;
+
+  font-family: var(--font-interface);
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
