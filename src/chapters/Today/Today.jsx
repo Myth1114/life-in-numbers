@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { ArrowUpRight, CircleHelp, RotateCcw } from "lucide-react";
+import { ArrowUpRight, RotateCcw } from "lucide-react";
 import { formatDisplayDate, formatWholeNumber } from "../../utils/numberFormat";
 
 import { gsap, useGSAP } from "../../animations/gsap";
@@ -12,7 +12,6 @@ import ShareCard from "../../components/share/ShareCard";
 import "./Today.css";
 
 function Today({ lifeData, onReadAgain, onAnotherDate, onStartOver }) {
-  const [showExplanation, setShowExplanation] = useState(false);
   const formattedBirthDate = formatDisplayDate(lifeData.birthDate);
   const formattedDays = formatWholeNumber(lifeData.lived.days);
 
