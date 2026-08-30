@@ -106,10 +106,6 @@ function Arrival({ onComplete }) {
         </div>
 
         <footer className="arrival__footer">
-          <button className="text-button" type="button">
-            What is this?
-          </button>
-
           <p className="privacy-note">Your date stays in your browser.</p>
         </footer>
       </div>
