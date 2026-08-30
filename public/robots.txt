@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://life-in-numbers-ecru.vercel.app/sitemap.xml

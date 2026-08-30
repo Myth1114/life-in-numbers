@@ -1,0 +1,17 @@
+{
+  "name": "Life in Numbers",
+  "short_name": "Life in Numbers",
+  "description": "A visual story about the time you have lived.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#e8e2d6",
+  "theme_color": "#e8e2d6",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
