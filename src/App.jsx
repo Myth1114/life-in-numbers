@@ -1,50 +1,41 @@
 import { useState } from "react";
+
 import Hero from "./chapters/Hero/Hero";
 import Arrival from "./chapters/Arrival/Arrival";
 import Time from "./chapters/Time/Time";
 import Body from "./chapters/Body/Body";
 import Sky from "./chapters/Sky/Sky";
+import Calendar from "./chapters/Calender/Calender";
+import Today from "./chapters/Today/Today";
+
+import TimeRewind from "./components/transition/TimeRewind";
 
 import { calculateLifeData } from "./utils/lifeCalculations";
-import Calendar from "./chapters/Calender/Calender";
-import LifeWeeks from "./chapters/LifeWeeks/LifeWeeks";
-import Remaining from "./chapters/Remaining/Remaining";
-import Perspective from "./chapters/Perspective/Perspective";
-import Today from "./chapters/Today/Today";
+import DayArrived from "./chapters/DayArrived/DayArrived";
+import SharedLives from "./chapters/SharedLives/SharedLives";
+import DateHistory from "./chapters/DateHistory/DateHistory";
+import Soundtrack from "./chapters/Soundtrack/Soundtrack";
 
 function App() {
   const [lifeData, setLifeData] = useState(null);
 
-  const [birthDateValue, setBirthDateValue] = useState("");
-  const [referenceAge, setReferenceAge] = useState(80);
+  const [isRewinding, setIsRewinding] = useState(false);
+
   const [arrivalKey, setArrivalKey] = useState(0);
 
-  function handleBirthDateSubmit(birthDate) {
-    const result = calculateLifeData(birthDate, referenceAge);
+  function handleBirthDateSubmit(arrivalData) {
+    const result = calculateLifeData(arrivalData.birthDate);
 
-    setBirthDateValue(birthDate);
-    setLifeData(result);
+    setLifeData({
+      ...result,
 
-    const prefersReducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
-
-    requestAnimationFrame(() => {
-      document.getElementById("time")?.scrollIntoView({
-        behavior: prefersReducedMotion ? "auto" : "smooth",
-
-        block: "start",
-      });
+      arrival: {
+        birthDate: result.birthDate,
+        location: arrivalData.location,
+      },
     });
-  }
-  function handleReferenceAgeChange(newReferenceAge) {
-    setReferenceAge(newReferenceAge);
 
-    if (!birthDateValue) {
-      return;
-    }
-    const updatedLifeData = calculateLifeData(birthDateValue, newReferenceAge);
-    setLifeData(updatedLifeData);
+    setIsRewinding(true);
   }
 
   function scrollToSection(sectionId) {
@@ -59,14 +50,21 @@ function App() {
     });
   }
 
+  function handleRewindComplete() {
+    setIsRewinding(false);
+
+    requestAnimationFrame(() => {
+      scrollToSection("day-arrived");
+    });
+  }
+
   function handleReadAgain() {
-    scrollToSection("time");
+    scrollToSection("day-arrived");
   }
 
   function handleAnotherDate() {
+    setIsRewinding(false);
     setLifeData(null);
-    setBirthDateValue("");
-    setReferenceAge(80);
 
     setArrivalKey((current) => current + 1);
 
@@ -76,9 +74,8 @@ function App() {
   }
 
   function handleStartOver() {
+    setIsRewinding(false);
     setLifeData(null);
-    setBirthDateValue("");
-    setReferenceAge(80);
 
     setArrivalKey((current) => current + 1);
 
@@ -86,24 +83,21 @@ function App() {
       scrollToSection("home");
     });
   }
+
   return (
     <main className="home">
       <Hero />
-
       <Arrival key={arrivalKey} onComplete={handleBirthDateSubmit} />
-
       {lifeData && (
         <>
+          <DayArrived lifeData={lifeData} />
           <Time lifeData={lifeData} />
           <Body lifeData={lifeData} />
           <Sky lifeData={lifeData} />
           <Calendar lifeData={lifeData} />
-          <LifeWeeks lifeData={lifeData} />
-          <Remaining
-            lifeData={lifeData}
-            onReferenceAgeChange={handleReferenceAgeChange}
-          />
-          <Perspective lifeData={lifeData} />
+          <Soundtrack lifeData={lifeData} />
+          <DateHistory lifeData={lifeData} />
+          <SharedLives lifeData={lifeData} />
           <Today
             lifeData={lifeData}
             onReadAgain={handleReadAgain}
@@ -111,6 +105,13 @@ function App() {
             onStartOver={handleStartOver}
           />
         </>
+      )}
+      {isRewinding && lifeData && (
+        <TimeRewind
+          birthDate={lifeData.birthDate}
+          location={lifeData.arrival.location}
+          onComplete={handleRewindComplete}
+        />
       )}
     </main>
   );

@@ -47,7 +47,7 @@ function Calendar({ lifeData }) {
     >
       <div className="data-section__container">
         <header className="data-section__header" data-reveal>
-          <p className="data-section__number">04</p>
+          <p className="data-section__number">05</p>
 
           <div>
             <p className="data-section__eyebrow">Familiar measures</p>

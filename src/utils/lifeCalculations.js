@@ -7,28 +7,13 @@ const DAYS_PER_YEAR = 365.2425;
 const SYNODIC_MONTH_DAYS = 29.53059;
 
 const HEARTBEATS_PER_MINUTE = 72;
-const BREATHS_PER_MINUTE = 16;
 
-const DEFAULT_LIFESPAN = 80;
-const MINIMUM_LIFESPAN = 1;
-const MAXIMUM_LIFESPAN = 130;
+const BREATHS_PER_MINUTE = 16;
 
 function validateDate(date, name) {
   if (!(date instanceof Date) || !Number.isFinite(date.getTime())) {
     throw new TypeError(`${name} must be a valid Date.`);
   }
-}
-
-function validateLifespan(lifespan) {
-  if (
-    !Number.isInteger(lifespan) ||
-    lifespan < MINIMUM_LIFESPAN ||
-    lifespan > MAXIMUM_LIFESPAN
-  ) {
-    throw new RangeError("Lifespan must be a whole number between 1 and 130.");
-  }
-
-  return lifespan;
 }
 
 export function calculateDaysLived(birthDate, today) {
@@ -166,81 +151,7 @@ export function calculateCalendarData(birthDate, today, completedAge) {
   };
 }
 
-/**
- * February 29 follows March 1 in a
- * non-leap reference year. This matches
- * calculateAge(), where the completed age
- * changes after February has ended.
- */
-function createReferenceDate(birthDate, lifespan) {
-  const referenceYear = birthDate.getUTCFullYear() + lifespan;
-
-  return new Date(
-    Date.UTC(referenceYear, birthDate.getUTCMonth(), birthDate.getUTCDate())
-  );
-}
-
-export function calculateReferenceData(
-  birthDate,
-  today,
-  lifespan = DEFAULT_LIFESPAN
-) {
-  validateDate(birthDate, "Birth date");
-
-  validateDate(today, "Today");
-
-  const validatedLifespan = validateLifespan(lifespan);
-
-  const referenceDate = createReferenceDate(birthDate, validatedLifespan);
-
-  const difference = referenceDate.getTime() - today.getTime();
-
-  const remainingDays = Math.max(
-    0,
-    Math.floor(difference / MILLISECONDS_PER_DAY)
-  );
-
-  const remainingWeeks = Math.floor(remainingDays / 7);
-
-  const remainingYears = remainingDays / DAYS_PER_YEAR;
-
-  return {
-    lifespan: validatedLifespan,
-
-    referenceDate,
-
-    remainingDays,
-    remainingWeeks,
-
-    remainingWeekends: remainingWeeks,
-
-    remainingYears,
-
-    remainingSummers: Math.floor(remainingYears),
-  };
-}
-
-export function calculatePerspectiveData(referenceData, completedAge) {
-  const remainingYears = Math.max(0, referenceData.remainingYears);
-
-  const birthdaysRemaining = Math.max(0, referenceData.lifespan - completedAge);
-
-  return {
-    booksAtOnePerMonth: Math.floor(remainingYears * 12),
-
-    tripsAtFourPerYear: Math.floor(remainingYears * 4),
-
-    annualGatherings: Math.round(remainingYears),
-
-    birthdays: birthdaysRemaining,
-  };
-}
-
-export function calculateLifeData(
-  dateValue,
-  lifespan = DEFAULT_LIFESPAN,
-  currentDate = new Date()
-) {
+export function calculateLifeData(dateValue, currentDate = new Date()) {
   const birthDate = parseDateInput(dateValue);
 
   if (!birthDate) {
@@ -253,8 +164,6 @@ export function calculateLifeData(
     throw new Error("Birth date cannot be in the future.");
   }
 
-  const validatedLifespan = validateLifespan(lifespan);
-
   const days = calculateDaysLived(birthDate, today);
 
   const years = calculateAge(birthDate, today);
@@ -266,10 +175,6 @@ export function calculateLifeData(
   const hours = calculateHoursLived(days);
 
   const minutes = calculateMinutesLived(days);
-
-  const reference = calculateReferenceData(birthDate, today, validatedLifespan);
-
-  const perspective = calculatePerspectiveData(reference, years);
 
   return {
     birthDate,
@@ -297,8 +202,5 @@ export function calculateLifeData(
     },
 
     calendar: calculateCalendarData(birthDate, today, years),
-
-    reference,
-    perspective,
   };
 }

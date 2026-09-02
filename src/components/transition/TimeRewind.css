@@ -1,0 +1,151 @@
+.time-rewind {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+
+  display: grid;
+  place-items: center;
+
+  min-height: 100svh;
+
+  padding: var(--page-padding);
+
+  visibility: hidden;
+
+  overflow: hidden;
+
+  background-color: var(--color-night);
+  color: var(--color-moon);
+}
+
+.time-rewind__grain {
+  position: absolute;
+  inset: -50%;
+
+  opacity: 0.08;
+
+  background-image: radial-gradient(
+    rgba(255, 255, 255, 0.6) 0.5px,
+    transparent 0.5px
+  );
+
+  background-size: 5px 5px;
+
+  pointer-events: none;
+}
+
+.time-rewind__content {
+  position: relative;
+  z-index: 1;
+
+  display: grid;
+  grid-template-rows: auto 1fr auto auto;
+  align-items: center;
+
+  width: min(100%, 70rem);
+  min-height: min(38rem, 80svh);
+}
+
+.time-rewind__eyebrow {
+  color: var(--color-rust);
+
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  letter-spacing: var(--letter-spacing-label);
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.time-rewind__year {
+  display: grid;
+  place-items: center;
+
+  text-align: center;
+}
+
+.time-rewind__label {
+  margin-bottom: 1rem;
+
+  color: rgba(215, 210, 197, 0.58);
+
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  letter-spacing: var(--letter-spacing-label);
+  text-transform: uppercase;
+}
+
+.time-rewind__number {
+  font-family: var(--font-display);
+  font-size: clamp(7rem, 23vw, 18rem);
+  font-variant-numeric: tabular-nums;
+  line-height: 0.75;
+  letter-spacing: -0.055em;
+}
+
+.time-rewind__arrival {
+  min-height: 7rem;
+
+  text-align: center;
+}
+
+.time-rewind__date {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 4.5rem);
+  line-height: 1.1;
+}
+
+.time-rewind__location {
+  margin-top: 0.75rem;
+
+  color: rgba(215, 210, 197, 0.65);
+
+  font-size: var(--font-size-base);
+}
+
+.time-rewind__track {
+  width: 100%;
+  height: 1px;
+
+  margin-top: 2rem;
+
+  overflow: hidden;
+
+  background-color: rgba(215, 210, 197, 0.18);
+}
+
+.time-rewind__track span {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  background-color: var(--color-rust);
+}
+
+@media (max-width: 700px) {
+  .time-rewind__content {
+    min-height: 65svh;
+  }
+
+  .time-rewind__number {
+    font-size: clamp(6rem, 31vw, 10rem);
+  }
+
+  .time-rewind__arrival {
+    min-height: 6rem;
+  }
+
+  .time-rewind__date {
+    font-size: clamp(2rem, 9vw, 3rem);
+  }
+
+  .time-rewind__location {
+    font-size: var(--font-size-sm);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .time-rewind__grain {
+    display: none;
+  }
+}

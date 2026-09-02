@@ -19,3 +19,13 @@ export function formatDisplayDate(date) {
     timeZone: "UTC",
   }).format(date);
 }
+export function formatWeekday(date) {
+  if (!(date instanceof Date)) {
+    return "";
+  }
+
+  return new Intl.DateTimeFormat("en-US", {
+    weekday: "long",
+    timeZone: "UTC",
+  }).format(date);
+}

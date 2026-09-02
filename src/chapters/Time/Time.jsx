@@ -45,7 +45,7 @@ function Time({ lifeData }) {
     >
       <div className="data-section__container">
         <header className="data-section__header" data-reveal>
-          <p className="data-section__number">01</p>
+          <p className="data-section__number">02</p>
 
           <div>
             <h2 className="data-section__title" id="time-title">

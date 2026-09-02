@@ -112,7 +112,7 @@ function Body({ lifeData }) {
     >
       <div className="data-section__container">
         <header className="data-section__header" data-reveal>
-          <p className="data-section__number">02</p>
+          <p className="data-section__number">03</p>
 
           <div>
             <p className="data-section__eyebrow">The body clock</p>
