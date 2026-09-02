@@ -1,14 +1,13 @@
 import { getTodayUTC, parseDateInput } from "./dateUtils";
+import { calculateArrivalContext } from "./arrivalContext";
+import { calculateCultureContext } from "../components/data/cultureContext";
 
 const MILLISECONDS_PER_DAY = 86_400_000;
-
 const DAYS_PER_YEAR = 365.2425;
-
 const SYNODIC_MONTH_DAYS = 29.53059;
-
 const HEARTBEATS_PER_MINUTE = 72;
-
 const BREATHS_PER_MINUTE = 16;
+const DAY_MILESTONE_INTERVAL = 5_000;
 
 function validateDate(date, name) {
   if (!(date instanceof Date) || !Number.isFinite(date.getTime())) {
@@ -151,6 +150,41 @@ export function calculateCalendarData(birthDate, today, completedAge) {
   };
 }
 
+export function calculateNextDayMilestone(
+  birthDate,
+  daysLived,
+  interval = DAY_MILESTONE_INTERVAL
+) {
+  validateDate(birthDate, "Birth date");
+
+  if (!Number.isInteger(daysLived) || daysLived < 0) {
+    throw new RangeError("Days lived must be a non-negative whole number.");
+  }
+
+  if (!Number.isInteger(interval) || interval <= 0) {
+    throw new RangeError("Milestone interval must be a positive whole number.");
+  }
+
+  /*
+   * Adding one ensures that someone who
+   * reaches exactly 10,000 days receives
+   * 15,000—not the milestone already reached.
+   */
+  const targetDays = Math.ceil((daysLived + 1) / interval) * interval;
+
+  const milestoneDate = new Date(
+    birthDate.getTime() + targetDays * MILLISECONDS_PER_DAY
+  );
+
+  return {
+    targetDays,
+
+    milestoneDate,
+
+    daysUntil: targetDays - daysLived,
+  };
+}
+
 export function calculateLifeData(dateValue, currentDate = new Date()) {
   const birthDate = parseDateInput(dateValue);
 
@@ -165,21 +199,19 @@ export function calculateLifeData(dateValue, currentDate = new Date()) {
   }
 
   const days = calculateDaysLived(birthDate, today);
-
   const years = calculateAge(birthDate, today);
-
   const months = calculateMonthsLived(birthDate, today);
-
   const weeks = calculateWeeksLived(days);
-
   const hours = calculateHoursLived(days);
-
   const minutes = calculateMinutesLived(days);
+  const arrivalContext = calculateArrivalContext(birthDate);
+  const cultureContext = calculateCultureContext(birthDate);
 
   return {
     birthDate,
     today,
-
+    arrivalContext,
+    cultureContext,
     lived: {
       years,
       months,
@@ -202,5 +234,8 @@ export function calculateLifeData(dateValue, currentDate = new Date()) {
     },
 
     calendar: calculateCalendarData(birthDate, today, years),
+    milestones: {
+      nextDay: calculateNextDayMilestone(birthDate, days),
+    },
   };
 }
