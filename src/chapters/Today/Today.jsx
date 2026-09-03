@@ -1,31 +1,44 @@
 import { useRef, useState } from "react";
-import { ArrowUpRight, RotateCcw } from "lucide-react";
+import { ArrowUpRight, Download, MapPin, RotateCcw } from "lucide-react";
+import { toPng } from "html-to-image";
 import { formatDisplayDate, formatWholeNumber } from "../../utils/numberFormat";
-
+import { formatLocationLabel } from "../../services/geocodingService";
 import { gsap, useGSAP } from "../../animations/gsap";
 import { useReducedMotion } from "../../hooks/useReducedMotion";
-import { Download } from "lucide-react";
-
-import { toPng } from "html-to-image";
-
 import ShareCard from "../../components/share/ShareCard";
 import "./Today.css";
 
 function Today({ lifeData, onReadAgain, onAnotherDate, onStartOver }) {
-  const formattedBirthDate = formatDisplayDate(lifeData.birthDate);
-  const formattedDays = formatWholeNumber(lifeData.lived.days);
-
   const sectionRef = useRef(null);
   const visualRef = useRef(null);
+  const shareCardRef = useRef(null);
 
   const [shareStatus, setShareStatus] = useState("idle");
-  const shareCardRef = useRef(null);
+
   const prefersReducedMotion = useReducedMotion();
+
+  const formattedBirthDate = formatDisplayDate(lifeData.birthDate);
+
+  const formattedDays = formatWholeNumber(lifeData.lived.days);
+
+  const birthplace = formatLocationLabel(lifeData.arrival.location);
+
+  const nextMilestone = lifeData.milestones.nextDay;
+
+  const formattedMilestone = formatWholeNumber(nextMilestone.targetDays);
+
+  const formattedMilestoneDate = formatDisplayDate(nextMilestone.milestoneDate);
+
+  const formattedDaysUntil = formatWholeNumber(nextMilestone.daysUntil);
+
   useGSAP(
     () => {
       const visual = visualRef.current;
+
       const word = visual?.querySelector(".today__word");
+
       const number = visual?.querySelector(".today__number");
+
       const revealItems = gsap.utils.toArray("[data-today-reveal]");
 
       if (prefersReducedMotion) {
@@ -40,9 +53,7 @@ function Today({ lifeData, onReadAgain, onAnotherDate, onStartOver }) {
         const visualTimeline = gsap.timeline({
           scrollTrigger: {
             trigger: visual,
-
             start: "top 80%",
-
             once: true,
           },
         });
@@ -56,7 +67,6 @@ function Today({ lifeData, onReadAgain, onAnotherDate, onStartOver }) {
           {
             autoAlpha: 1,
             y: 0,
-
             duration: 1.25,
             ease: "power3.out",
           }
@@ -75,7 +85,6 @@ function Today({ lifeData, onReadAgain, onAnotherDate, onStartOver }) {
             y: 0,
             scale: 1,
             rotation: 0,
-
             duration: 1.35,
             ease: "power3.out",
           },
@@ -93,15 +102,12 @@ function Today({ lifeData, onReadAgain, onAnotherDate, onStartOver }) {
           {
             autoAlpha: 1,
             y: 0,
-
             duration: 1.15,
             ease: "power3.out",
 
             scrollTrigger: {
               trigger: item,
-
               start: "top 88%",
-
               once: true,
             },
           }
@@ -116,6 +122,7 @@ function Today({ lifeData, onReadAgain, onAnotherDate, onStartOver }) {
       revertOnUpdate: true,
     }
   );
+
   async function handleDownloadCard() {
     if (!shareCardRef.current || shareStatus === "generating") {
       return;
@@ -141,10 +148,8 @@ function Today({ lifeData, onReadAgain, onAnotherDate, onStartOver }) {
           top: "auto",
           left: "auto",
           right: "auto",
-
           width: "1080px",
           height: "1350px",
-
           margin: "0",
           transform: "none",
         },
@@ -169,6 +174,22 @@ function Today({ lifeData, onReadAgain, onAnotherDate, onStartOver }) {
     }
   }
 
+  function getShareStatusMessage() {
+    if (shareStatus === "generating") {
+      return "Creating your share card.";
+    }
+
+    if (shareStatus === "complete") {
+      return "Your share card has been downloaded.";
+    }
+
+    if (shareStatus === "error") {
+      return "The share card could not be created. Please try again.";
+    }
+
+    return "";
+  }
+
   return (
     <section
       className="today"
@@ -183,30 +204,11 @@ function Today({ lifeData, onReadAgain, onAnotherDate, onStartOver }) {
 
             <p className="today__number">1</p>
           </div>
-          {/* 
-          <button
-            className="today__explain-button"
-            type="button"
-            aria-expanded={showExplanation}
-            aria-controls="today-explanation"
-            onClick={() => setShowExplanation((current) => !current)}
-          >
-            <CircleHelp size={20} strokeWidth={1.5} aria-hidden="true" />
-
-            <span>Explain this</span>
-          </button>
-
-          {showExplanation && (
-            <p className="today__explanation" id="today-explanation">
-              Future figures were reference points. Today is different: it is
-              the one unit of time currently available to you.
-            </p>
-          )} */}
         </div>
 
         <div className="today__summary">
           <p className="today__summary-label" data-today-reveal>
-            A personal summary
+            11 / A personal summary
           </p>
 
           <h2 className="today__title" id="today-title" data-today-reveal>
@@ -215,9 +217,48 @@ function Today({ lifeData, onReadAgain, onAnotherDate, onStartOver }) {
           </h2>
 
           <p className="today__description" data-today-reveal>
-            The future figures were only a reference. This one is more certain:
-            today is the only square asking to be noticed.
+            These figures cannot describe everything a life contains. They can
+            only make the passing of time a little more visible. Today remains
+            the one number still asking to be used.
           </p>
+
+          <div className="today__recap" data-today-reveal>
+            <article className="today__recap-item">
+              <div className="today__recap-heading">
+                <p>Where it began</p>
+
+                <MapPin size={18} strokeWidth={1.5} aria-hidden="true" />
+              </div>
+
+              <p className="today__recap-value">{birthplace}</p>
+
+              <p className="today__recap-note">Your selected birthplace</p>
+            </article>
+
+            <article className="today__recap-item">
+              <div className="today__recap-heading">
+                <p>Days completed</p>
+              </div>
+
+              <p className="today__recap-value">{formattedDays}</p>
+
+              <p className="today__recap-note">Completed days before today</p>
+            </article>
+
+            <article className="today__recap-item today__recap-item--milestone">
+              <div className="today__recap-heading">
+                <p>Next milestone</p>
+              </div>
+
+              <p className="today__recap-value">{formattedMilestone} days</p>
+
+              <p className="today__milestone-date">{formattedMilestoneDate}</p>
+
+              <p className="today__recap-note">
+                {formattedDaysUntil} days from today
+              </p>
+            </article>
+          </div>
 
           <div className="today__actions" data-today-reveal>
             <button
@@ -239,6 +280,7 @@ function Today({ lifeData, onReadAgain, onAnotherDate, onStartOver }) {
 
               <span>Another date</span>
             </button>
+
             <button
               className="today__secondary-action"
               type="button"
@@ -258,12 +300,19 @@ function Today({ lifeData, onReadAgain, onAnotherDate, onStartOver }) {
               </span>
             </button>
           </div>
+
+          <p className="visually-hidden" role="status" aria-live="polite">
+            {getShareStatusMessage()}
+          </p>
         </div>
 
         <footer className="today__footer" data-today-reveal>
           <p>Life in Numbers / An almanac for the living.</p>
 
-          <p className="today__privacy">No data leaves this page.</p>
+          <p className="today__privacy">
+            No account required. We do not intentionally store your birth date
+            or birthplace.
+          </p>
         </footer>
       </div>
 
@@ -277,15 +326,8 @@ function Today({ lifeData, onReadAgain, onAnotherDate, onStartOver }) {
 
           <span>Start over</span>
         </button>
-
-        {/* <div className="today__progress" aria-label="Journey complete">
-          <span />
-          <span />
-          <span />
-          <span />
-          <span className="is-active" />
-        </div> */}
       </div>
+
       <ShareCard ref={shareCardRef} lifeData={lifeData} />
     </section>
   );

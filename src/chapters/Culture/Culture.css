@@ -183,6 +183,50 @@
   line-height: 1.6;
 }
 
+.culture__entertainment {
+  margin-bottom: 1rem;
+  border: var(--border-strong);
+
+  padding: 2rem;
+
+  background-color: var(--color-paper-light);
+}
+
+.culture__entertainment-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+
+  margin-top: 1.5rem;
+}
+
+.culture__entertainment-card {
+  position: relative;
+
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 1rem;
+
+  min-height: 11rem;
+
+  border: var(--border-light);
+
+  padding: 1.5rem;
+}
+
+.culture__entertainment-icon {
+  color: var(--color-rust);
+}
+
+.culture__entertainment-link {
+  color: var(--color-muted);
+}
+
+.culture__entertainment-link:hover {
+  color: var(--color-rust);
+}
+
 @media (max-width: 800px) {
   .culture__records {
     grid-template-columns: 1fr;
@@ -200,5 +244,16 @@
 
   .culture__record-group {
     padding: 1.5rem;
+  }
+  .culture__entertainment {
+    padding: 1.5rem;
+  }
+
+  .culture__entertainment-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .culture__entertainment-card {
+    min-height: 0;
   }
 }

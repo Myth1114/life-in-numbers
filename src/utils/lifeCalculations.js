@@ -1,6 +1,7 @@
 import { getTodayUTC, parseDateInput } from "./dateUtils";
 import { calculateArrivalContext } from "./arrivalContext";
 import { calculateCultureContext } from "../components/data/cultureContext";
+import { getEntertainmentContext } from "../components/data/entertainmentArchive";
 
 const MILLISECONDS_PER_DAY = 86_400_000;
 const DAYS_PER_YEAR = 365.2425;
@@ -191,7 +192,7 @@ export function calculateLifeData(dateValue, currentDate = new Date()) {
   if (!birthDate) {
     throw new Error("A valid birth date is required.");
   }
-
+  const entertainment = getEntertainmentContext(birthDate);
   const today = getTodayUTC(currentDate);
 
   if (birthDate > today) {
@@ -210,8 +211,7 @@ export function calculateLifeData(dateValue, currentDate = new Date()) {
   return {
     birthDate,
     today,
-    arrivalContext,
-    cultureContext,
+
     lived: {
       years,
       months,
@@ -237,5 +237,8 @@ export function calculateLifeData(dateValue, currentDate = new Date()) {
     milestones: {
       nextDay: calculateNextDayMilestone(birthDate, days),
     },
+    arrivalContext,
+    cultureContext,
+    entertainment,
   };
 }

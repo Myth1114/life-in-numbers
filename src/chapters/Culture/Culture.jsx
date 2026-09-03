@@ -1,9 +1,15 @@
 import { useRef } from "react";
 
-import { ArrowUpRight, Award, Flag, Trophy } from "lucide-react";
+import {
+  ArrowUpRight,
+  Award,
+  Clapperboard,
+  Flag,
+  Gamepad2,
+  Trophy,
+} from "lucide-react";
 
 import { useChapterReveal } from "../../hooks/useChapterReveal";
-
 import { useCultureHonours } from "../../hooks/useCultureHonours";
 
 import "./Culture.css";
@@ -15,6 +21,8 @@ function Culture({ lifeData }) {
 
   const { year, era, tournamentChampions } = lifeData.cultureContext;
 
+  const entertainment = lifeData.entertainment;
+
   const honoursState = useCultureHonours(year);
 
   const nobelPrize = honoursState.nobelPeacePrize;
@@ -22,6 +30,8 @@ function Culture({ lifeData }) {
   const formulaOne = honoursState.formulaOneChampion;
 
   const hasSports = tournamentChampions.length > 0 || formulaOne?.available;
+
+  const academyUrl = `https://www.oscars.org/oscars/ceremonies/${year + 1}`;
 
   return (
     <section
@@ -32,7 +42,7 @@ function Culture({ lifeData }) {
     >
       <div className="data-section__container">
         <header className="data-section__header" data-reveal>
-          <p className="data-section__number">10</p>
+          <p className="data-section__number">11</p>
 
           <div>
             <p className="data-section__eyebrow">The world you joined</p>
@@ -43,7 +53,7 @@ function Culture({ lifeData }) {
 
             <p className="data-section__introduction">
               Championships were being decided, honours were being awarded and
-              the culture around you was continuing to change.
+              culture was continuing to change.
             </p>
           </div>
         </header>
@@ -59,6 +69,83 @@ function Culture({ lifeData }) {
 
           <p className="culture__era-description">{era.description}</p>
         </article>
+
+        {entertainment && (
+          <section
+            className="culture__entertainment"
+            aria-labelledby="culture-entertainment-title"
+            data-reveal
+          >
+            <div className="culture__heading">
+              <h3 className="culture__label" id="culture-entertainment-title">
+                On screens that year
+              </h3>
+
+              <Clapperboard size={21} strokeWidth={1.4} aria-hidden="true" />
+            </div>
+
+            <div className="culture__entertainment-grid">
+              <article className="culture__entertainment-card">
+                <div className="culture__entertainment-icon">
+                  <Clapperboard
+                    size={22}
+                    strokeWidth={1.4}
+                    aria-hidden="true"
+                  />
+                </div>
+
+                <div>
+                  <p className="culture__record-label">
+                    Best Picture for films from {year}
+                  </p>
+
+                  <p className="culture__record-value">
+                    {entertainment.bestPicture}
+                  </p>
+
+                  <p className="culture__record-note">
+                    Awarded at the following Academy Awards ceremony.
+                  </p>
+                </div>
+
+                <a
+                  className="culture__entertainment-link"
+                  href={academyUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label={`View the Academy Awards ceremony associated with films from ${year}`}
+                >
+                  <ArrowUpRight
+                    size={18}
+                    strokeWidth={1.5}
+                    aria-hidden="true"
+                  />
+                </a>
+              </article>
+
+              <article className="culture__entertainment-card">
+                <div className="culture__entertainment-icon">
+                  <Gamepad2 size={22} strokeWidth={1.4} aria-hidden="true" />
+                </div>
+
+                <div>
+                  <p className="culture__record-label">
+                    A notable game from {year}
+                  </p>
+
+                  <p className="culture__record-value">
+                    {entertainment.notableGame}
+                  </p>
+
+                  <p className="culture__record-note">
+                    A selected cultural reference, not a universal Game of the
+                    Year winner.
+                  </p>
+                </div>
+              </article>
+            </div>
+          </section>
+        )}
 
         {honoursState.status === "loading" && (
           <div className="culture__state" role="status" data-reveal>
@@ -87,7 +174,7 @@ function Culture({ lifeData }) {
                     <article className="culture__record">
                       <div>
                         <p className="culture__record-label">
-                          Formula One Champion of your birth year
+                          Formula One champion of your birth year
                         </p>
 
                         <p className="culture__record-value">
@@ -233,9 +320,10 @@ function Culture({ lifeData }) {
             </p>
 
             <p className="data-note__description">
-              These are selected, verifiable reference points. They are not
-              intended to represent every country, sport, achievement or
-              cultural experience from that year.
+              These are selected reference points. The game is a cultural
+              selection rather than a claim of one universal award. The records
+              are not intended to represent every country, sport, achievement or
+              experience from that year.
             </p>
           </div>
         </aside>

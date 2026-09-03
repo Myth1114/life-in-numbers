@@ -17,6 +17,8 @@ import DateHistory from "./chapters/DateHistory/DateHistory";
 import Soundtrack from "./chapters/Soundtrack/Soundtrack";
 import ArrivalContext from "./chapters/ArrivalContext/ArrivalContext";
 import Culture from "./chapters/Culture/Culture";
+import Prices from "./chapters/Prices/Prices";
+import WorldContext from "./chapters/WorldContext/WorldContext";
 
 function App() {
   const [lifeData, setLifeData] = useState(null);
@@ -101,7 +103,9 @@ function App() {
           <DateHistory lifeData={lifeData} />
           <SharedLives lifeData={lifeData} />
           <ArrivalContext lifeData={lifeData} />
+          <WorldContext lifeData={lifeData} />
           <Culture lifeData={lifeData} />
+          <Prices lifeData={lifeData} />
           <Today
             lifeData={lifeData}
             onReadAgain={handleReadAgain}
